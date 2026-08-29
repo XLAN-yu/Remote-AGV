@@ -1,0 +1,43 @@
+:root {
+  color-scheme: dark;
+  background: #081016;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-width: 320px;
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  min-height: 100dvh;
+  overscroll-behavior: none;
+  background: #081016;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+noscript {
+  display: block;
+  max-width: 42rem;
+  margin: 4rem auto;
+  padding: 1rem 1.25rem;
+  color: #f1f6f4;
+  border: 1px solid #24343d;
+  border-radius: 12px;
+  background: #101b22;
+  font-family: "Segoe UI", "Microsoft YaHei UI", sans-serif;
+}
