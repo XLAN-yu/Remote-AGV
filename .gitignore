@@ -1,0 +1,10 @@
+node_modules/
+rover-offline/dist/
+dist-packages/
+_rover-wheelhouse-cache-py311-aarch64/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.DS_Store
+.env*
+
