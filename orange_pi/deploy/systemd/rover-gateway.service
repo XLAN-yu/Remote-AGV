@@ -1,0 +1,30 @@
+[Unit]
+Description=ROVER-ONE WebSocket to UART gateway
+Documentation=file:/opt/rover-one/current/orange_pi/README.md
+Wants=network-online.target
+After=network-online.target
+StartLimitIntervalSec=30
+StartLimitBurst=10
+
+[Service]
+Type=simple
+User=rover
+Group=rover
+SupplementaryGroups=dialout
+WorkingDirectory=/opt/rover-one/current/orange_pi/gateway
+Environment=PYTHONUNBUFFERED=1
+Environment=GATEWAY_APP=app:app
+EnvironmentFile=-/etc/rover-one/gateway.env
+ExecStart=/opt/rover-one/current/orange_pi/gateway/.venv/bin/python -m uvicorn ${GATEWAY_APP} --host 127.0.0.1 --port 8000 --proxy-headers --forwarded-allow-ips=127.0.0.1
+Restart=always
+RestartSec=1
+TimeoutStopSec=5
+KillSignal=SIGINT
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=true
+
+[Install]
+WantedBy=multi-user.target
