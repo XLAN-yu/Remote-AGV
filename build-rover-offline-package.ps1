@@ -1,7 +1,7 @@
 [CmdletBinding()]
 param(
   [ValidatePattern('^[0-9A-Za-z][0-9A-Za-z._-]{0,63}$')]
-  [string]$Version = '1.0.0',
+  [string]$Version = '1.1.0-ubuntu2404',
 
   [string]$WheelhousePath = ''
 )
@@ -118,7 +118,7 @@ foreach ($license in $licenseFiles) {
   }
 }
 
-$wheelhouseDestination = Join-Path $stageRoot 'wheelhouse\py311-linux-aarch64'
+$wheelhouseDestination = Join-Path $stageRoot 'wheelhouse\py312-linux-aarch64'
 New-Item -ItemType Directory -Path $wheelhouseDestination -Force | Out-Null
 if ($WheelhousePath) {
   $wheelhouseSource = [System.IO.Path]::GetFullPath($WheelhousePath)
@@ -130,7 +130,7 @@ else {
   if (-not $pythonCommand) {
     throw 'Python was not found; python -m pip is required to build the ARM64 wheelhouse'
   }
-  Write-Host '==> Downloading Debian/Armbian 12, Python 3.11, ARM64 wheels'
+  Write-Host '==> Downloading Ubuntu 24.04, Python 3.12, ARM64 wheels'
   $pipDownloadArguments = @(
     '-m', 'pip', 'download',
     '--disable-pip-version-check',
@@ -138,8 +138,8 @@ else {
     '--only-binary=:all:',
     '--platform', 'manylinux2014_aarch64',
     '--implementation', 'cp',
-    '--python-version', '311',
-    '--abi', 'cp311',
+    '--python-version', '312',
+    '--abi', 'cp312',
     '--dest', $wheelhouseDestination,
     '-r', $runtimeRequirements
   )
@@ -159,8 +159,8 @@ foreach ($requiredWheel in @('fastapi-', 'uvicorn-', 'pyserial-', 'pydantic_core
 $manifest = [ordered]@{
   name = 'ROVER ONE local offline remote control'
   version = $Version
-  target = 'Debian/Armbian 12 arm64'
-  python = '3.11'
+  target = 'Ubuntu 24.04 arm64'
+  python = '3.12'
   webRuntime = 'nginx static files'
   gatewayRuntime = 'FastAPI + Uvicorn + pyserial'
   nodeRequiredOnRobot = $false
