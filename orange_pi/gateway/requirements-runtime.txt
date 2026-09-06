@@ -1,4 +1,4 @@
-# Baseline used by the Debian/Armbian 12 arm64 offline wheelhouse.
+# Baseline used by the Ubuntu 24.04, Python 3.12, arm64 offline wheelhouse.
 fastapi==0.115.12
 uvicorn==0.34.3
 pyserial==3.5
