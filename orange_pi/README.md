@@ -29,13 +29,19 @@ UART 桥接都在香橙派本机运行；没有云端依赖，也不需要互联
 
 - 预构建的纯静态遥控网页；
 - 网关源码和部署配置；
-- Debian/Armbian 12、Python 3.11、ARM64 的 Python wheelhouse；
+- Ubuntu 24.04、Python 3.12、ARM64 的 Python wheelhouse；
 - 包内逐文件 `SHA256SUMS` 和 ZIP 外置 `.sha256`；
 - 断网安装、验证与版本回退脚本。
 
-完整包面向 64 位 Debian 12 / Armbian 基线，并假定系统镜像已安装 systemd、NetworkManager、
-nginx、Python 3.11 venv、curl、unzip。安装脚本不会运行 `apt`、`npm` 或联网 `pip`。如果连这些
-系统组件也必须从空白卡完全断网安装，应制作预制 SD 卡镜像，而不是使用跨发行版 ZIP。
+完整包面向 64 位 Ubuntu 24.04，并假定系统镜像已安装 systemd、NetworkManager、nginx、Python 3.12
+venv、curl、unzip。安装脚本不会运行 `apt`、`npm` 或联网 `pip`。首次准备系统时，在仍能联网的情况下运行：
+
+```bash
+sudo apt update && sudo apt install -y nginx network-manager python3-venv curl unzip
+```
+
+之后可用 ZIP 断网安装应用。如果连这些系统组件也必须从空白卡完全断网安装，应制作预制 SD 卡镜像，
+而不是使用跨发行版 ZIP。
 
 生成的 ZIP 根目录 `README.md` 是面向现场安装者的完整步骤。
 
@@ -44,8 +50,8 @@ nginx、Python 3.11 venv、curl、unzip。安装脚本不会运行 `apt`、`npm`
 把 ZIP 和 `.sha256` 复制到香橙派，使用实际版本文件名：
 
 ```bash
-sha256sum -c ROVER-ONE-local-offline-v1.0.0.zip.sha256
-unzip ROVER-ONE-local-offline-v1.0.0.zip -d rover-one-offline
+sha256sum -c ROVER-ONE-local-offline-v1.1.0-ubuntu2404.zip.sha256
+unzip ROVER-ONE-local-offline-v1.1.0-ubuntu2404.zip -d rover-one-offline
 cd rover-one-offline
 sudo bash ./orange_pi/deploy/install-offline.sh
 ```
@@ -200,5 +206,5 @@ TLS、身份认证、防火墙与控制权仲裁。
 | `10.42.0.1` 打不开 | 检查 `ip -4 addr`、`systemctl status nginx`、`nginx -t`。 |
 | 首页能开但显示断线 | 检查 `curl 127.0.0.1:8000/health` 和 `journalctl -u rover-gateway`。 |
 | UART 异常 | 核对设备树、设备名、权限、波特率、TX/RX 交叉、共地及 console/getty 占用。 |
-| 安装器拒绝 Python | 完整包固定支持 Python 3.11；换匹配镜像或为目标 ABI 重新制作 wheelhouse。 |
+| 安装器拒绝 Python 或系统 | 完整包固定支持 Ubuntu 24.04、Python 3.12；核对 `cat /etc/os-release`、`python3 --version` 并重新制作匹配 wheelhouse。 |
 | `.local` 不可用 | 直接使用 `http://10.42.0.1`。 |
