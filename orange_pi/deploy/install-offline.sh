@@ -8,7 +8,7 @@ readonly RELEASES_DIR="${INSTALL_ROOT}/releases"
 readonly CURRENT_LINK="${INSTALL_ROOT}/current"
 readonly PREVIOUS_LINK="${INSTALL_ROOT}/previous"
 readonly CONFIG_DIR="/etc/rover-one"
-readonly WHEELHOUSE="${PACKAGE_ROOT}/wheelhouse/py311-linux-aarch64"
+readonly WHEELHOUSE="${PACKAGE_ROOT}/wheelhouse/py312-linux-aarch64"
 
 temporary_release=""
 previous_target=""
@@ -49,11 +49,17 @@ trap cleanup_failed_install ERR INT TERM
 [[ -f "${PACKAGE_ROOT}/VERSION" ]] || die "找不到 VERSION；请从正式离线 ZIP 解压后的根目录运行"
 [[ -f "${PACKAGE_ROOT}/SHA256SUMS" ]] || die "找不到 SHA256SUMS；离线包不完整"
 [[ -f "${PACKAGE_ROOT}/web/index.html" ]] || die "找不到 web/index.html"
-[[ -d "${WHEELHOUSE}" ]] || die "缺少 Python 3.11 arm64 wheelhouse；请重新生成完整离线包"
+[[ -d "${WHEELHOUSE}" ]] || die "缺少 Python 3.12 arm64 wheelhouse；请重新生成 Ubuntu 24.04 离线包"
 
-for command_name in sha256sum python3 systemctl nginx useradd usermod install cp mv ln readlink curl ip grep; do
+for command_name in sha256sum python3 systemctl nginx nmcli useradd usermod install cp mv ln readlink curl ip grep; do
   require_command "${command_name}"
 done
+
+[[ -r /etc/os-release ]] || die "无法识别系统；此包只支持 Ubuntu 24.04"
+# shellcheck disable=SC1091
+. /etc/os-release
+[[ "${ID:-}" == "ubuntu" && "${VERSION_ID:-}" == "24.04" ]] \
+  || die "此包只支持 Ubuntu 24.04 arm64，当前为 ${PRETTY_NAME:-未知系统}"
 
 machine_arch="$(uname -m)"
 case "${machine_arch}" in
@@ -62,7 +68,8 @@ case "${machine_arch}" in
 esac
 
 python_version="$(python3 -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')"
-[[ "${python_version}" == "3.11" ]] || die "此包的离线 wheels 要求 Python 3.11，当前为 ${python_version}"
+[[ "${python_version}" == "3.12" ]] || die "此包的离线 wheels 要求 Python 3.12，当前为 ${python_version}"
+python3 -m venv --help >/dev/null 2>&1 || die "缺少 Python venv；请先安装 python3-venv"
 
 version="$(tr -d '\r\n' < "${PACKAGE_ROOT}/VERSION")"
 [[ "${version}" =~ ^[0-9A-Za-z][0-9A-Za-z._-]{0,63}$ ]] || die "VERSION 格式无效"
