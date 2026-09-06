@@ -1,6 +1,6 @@
 # ROVER ONE 本地离线遥控包
 
-这个包把小车遥控网页、FastAPI→UART 网关、nginx 配置和 Python 3.11 ARM64 wheels 放在一起。
+这个包把小车遥控网页、FastAPI→UART 网关、nginx 配置和 Python 3.12 ARM64 wheels 放在一起。
 安装完成后，网页由香橙派自己提供：手机连接 `ROVER-ONE` 热点并打开
 `http://10.42.0.1` 即可，不经过云端，也不需要互联网或 Node.js。
 
@@ -12,20 +12,21 @@
 完整断网安装包面向：
 
 - Orange Pi Zero 3 / 64 位 ARM（`aarch64`）
-- Debian 12 或对应 Armbian 基线
-- Python 3.11
+- Ubuntu 24.04 LTS（arm64）
+- Python 3.12
 - 已随系统镜像安装：systemd、NetworkManager、nginx、Python venv、curl、unzip
 
-包内包含应用层 Python wheels，但不打包发行版的系统组件。如果目标是一张完全空白、且从未准备过
-这些系统组件的 SD 卡，请先制作已包含上述组件的系统镜像；普通 ZIP 无法安全替代跨发行版的系统镜像。
+包内包含应用层 Python wheels，但不打包 Ubuntu 系统组件。首次准备 Ubuntu 24.04 时，在仍能联网的
+情况下先安装：`sudo apt update && sudo apt install -y nginx network-manager python3-venv curl unzip`。之后可
+使用该 ZIP 断网安装应用；普通 ZIP 无法安全替代系统镜像。
 
 ## 1. 校验与解压
 
 把 ZIP 和同名 `.sha256` 文件复制到香橙派。先在 ZIP 所在目录校验：
 
 ```bash
-sha256sum -c ROVER-ONE-local-offline-v1.0.0.zip.sha256
-unzip ROVER-ONE-local-offline-v1.0.0.zip -d rover-one-offline
+sha256sum -c ROVER-ONE-local-offline-v1.1.0-ubuntu2404.zip.sha256
+unzip ROVER-ONE-local-offline-v1.1.0-ubuntu2404.zip -d rover-one-offline
 cd rover-one-offline
 ```
 
